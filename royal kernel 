@@ -1,0 +1,92 @@
+royal/
+├── royal_kernel/
+│   ├── Cargo.toml
+│   └── src/
+│       ├── lib.rs
+│       ├── ritual_logic.rs
+│       ├── actix_gateway.rs
+│       └── ffi_bridge.rs
+├── ironpython_plugins/
+│   ├── __init__.py
+│   ├── karmic_trace.py
+│   ├── vow_evaluator.py
+│   └── oath_learning.py
+├── agi_microservice/
+│   ├── core.py
+│   ├── agent_memory.py
+│   ├── symbolic_reactor.py
+│   └── pipe_server.py
+├── cli_ritual/
+│   ├── Cargo.toml
+│   └── src/
+│       ├── main.rs
+│       └── commands.rs
+├── config/
+│   └── royal.toml
+├── README.md
+└── Cargo.toml
+
+// File: royal_kernel/src/lib.rs
+pub mod ritual_logic;
+pub mod actix_gateway;
+pub mod ffi_bridge;
+
+// File: royal_kernel/src/ritual_logic.rs
+use chrono::{DateTime, Utc};
+
+#[derive(Debug, Clone)]
+pub struct Oath {
+    pub name: String,
+    pub sigil: String,
+    pub bound_to: String,
+    pub fulfilled: bool,
+    pub broken_time: Option<DateTime<Utc>>,
+}
+
+pub fn evaluate_oath(oath: &Oath) -> &'static str {
+    if oath.fulfilled {
+        "Oath fulfilled"
+    } else if oath.broken_time.is_some() {
+        "Broken Oath – Invoke Crown's Fire"
+    } else {
+        "Awaiting outcome"
+    }
+}
+
+// File: royal_kernel/src/ffi_bridge.rs
+use std::process::{Command, Stdio};
+
+pub fn call_agi_python(json_payload: &str) -> Result<String, String> {
+    let output = Command::new("python3")
+        .arg("agi_microservice/pipe_server.py")
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .spawn()
+        .map_err(|e| e.to_string())?;
+
+    // Simplified for scaffold
+    Ok("AGI response placeholder".to_string())
+}
+
+// File: ironpython_plugins/karmic_trace.py
+def trace_karma_tree(user_id):
+    return [
+        {"event": "Betrayal", "timestamp": "2024-01-01"},
+        {"event": "Unfulfilled Promise", "timestamp": "2025-01-01"}
+    ]
+
+// File: agi_microservice/pipe_server.py
+import sys, json
+
+def main():
+    payload = json.load(sys.stdin)
+    print(json.dumps({"result": "Judgment: Fire"}))
+
+if __name__ == "__main__":
+    main()
+
+// File: cli_ritual/src/main.rs
+mod commands;
+
+fn main() {
+    commands::invoke_rit
